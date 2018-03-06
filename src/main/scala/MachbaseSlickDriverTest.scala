@@ -27,7 +27,7 @@ object MachbaseSlickDriver extends App {
         | machbase {
         |    dataSourceClass = "slick.jdbc.DatabaseUrlDataSource"
         |    properties {
-        |      url = "jdbc:machbase://127.0.0.1:8086/mhdb"
+        |      url = "jdbc:machbase://127.0.0.1:5656/mhdb"
         |      user = "SYS"
         |      password = "MANAGER"
         |    }
