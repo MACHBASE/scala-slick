@@ -25,3 +25,7 @@ Select repository as project folder, and build them.
 Press `F9` or execute 'Run > Run' menu.
 
 After that, please select one of two examples. (DriverTest is recommended)
+
+## Reference
+If you encounter any problem before running, please refer to [Getting started](https://docs.scala-lang.org/getting-started.html) pages of Scala.
+Otherwise, please feel free to contant via support email (support@machbase.com) or signals in this repository page!
