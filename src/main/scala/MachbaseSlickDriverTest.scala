@@ -12,7 +12,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-
 object MachbaseSlickDriver extends App {
 
     class Tags(tag: Tag) extends Table[(String, Timestamp, Double)](tag, "TAG_DATA") {
@@ -22,6 +21,9 @@ object MachbaseSlickDriver extends App {
         def * = (name, dt, value)
     }
 
+    ////////////////////////////////
+    /// PREPARE
+    ////////////////////////////////
     val confString =
       """
         | machbase {
@@ -43,11 +45,11 @@ object MachbaseSlickDriver extends App {
     val conf = ConfigFactory.parseString(confString)
     val db = Database.forConfig("machbase", conf)
 
-    val tags = TableQuery[Tags]
-
     ////////////////////////////////
-    // create tables
+    // CREATE TABLE
+    ////////////////////////////////
     println("Creating table tag_data.")
+    val tags = TableQuery[Tags]
     val createSchemas = Seq(
         tags
     )
@@ -58,6 +60,7 @@ object MachbaseSlickDriver extends App {
 
     ////////////////////////////////
     /// INSERT
+    ////////////////////////////////
     val utildate = new java.util.Date()
     val datetime = new java.sql.Timestamp(utildate.getTime)
     val ins = DBIO.seq(
@@ -71,12 +74,13 @@ object MachbaseSlickDriver extends App {
     )
 
     println("Inserting 5 rows.")
-
     val insexec = db.run(ins)
     Await.result(insexec, 2 seconds)
-    /// INSERT
     println("Insert success.")
 
+    ////////////////////////////////
+    /// SELECT
+    ////////////////////////////////
     println("Select all records from tag_data.")
     // query all records from Tag_datas table
     val queryFuture = db.run(tags.result).map(_.foreach {
@@ -84,18 +88,20 @@ object MachbaseSlickDriver extends App {
             println(" " + dt + "\t" + name + "\t" + value)
     })
     Await.result(queryFuture, 2 seconds)
-
     println("Select success.")
+
     ////////////////////////////////
     /// DROP TABLE
-
+    ////////////////////////////////
     println("Drop table tag_data.")
     val dropTable : DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(createSchemas.map(table => table.schema.drop): _*)
     val dropTableFuture = db.run(dropTable)
-
     Await.result(dropTableFuture, 10 seconds)
     println("Drop success.")
-    // disconnect
+
+    ////////////////////////////////
+    /// DISCONNECT
+    ////////////////////////////////
     db.close()
     println("Disconnected.")
 }

@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 
-object TypeTest extends App {
+object MachbaseSlickTypeTest extends App {
 
     class TypeTestTable(tag: Tag) extends Table[(String, Timestamp, Short, Int, Long, Float, Char, Boolean, Date)](tag, "TYPES") {
         def str_test = column[String]("STR_TEST")
